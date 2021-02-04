@@ -3,17 +3,24 @@
  */
 
 //  CLIENTE
-var inOut = 'si',
-    elegir = '',
-    salir = false
+/**
+ * Programación Funcional
+ */
 
-let cliente = {
-    nombre: 'Pepe',
-    edad: 49
-}
+//  CLIENTE
+let inOut = 'si',
+    codPlato = 'x',
+    codigoOk = true,
+    totalPedido = 0
 
 // Pedido Actual
 let pedido = []
+
+let cliente = {
+    nombre: 'Alvaro',
+    edad: 54
+}
+
 
 // MOSTRAR MENÚ
 const mostrarMenu = () => {
@@ -29,48 +36,86 @@ mostrarMenu()
 
 // PEDIDO
 
+// **************** Funciones **********************
 
-function pedir(inOut) {
+function pedirSiNo(inOut) {
     inOut = prompt(`Hola ${cliente.nombre}, Quieres realizar un pedido (si/no) :`).toLocaleLowerCase()
     // Valida si quiere o no realizar un pedido
     validaIntroPedido(inOut)
+    return inOut
 }
 
-
 function validaIntroPedido(inOut) {
-    console.log('inOut en validaIntroPedido:', inOut);
     switch (inOut) {
         case 'si':
-            console.log('Nos vamos a realizar el pedido')
-            inicioComanda()
-            break
+                break
         case 'no':
                 console.log('Chao')
-                salir = true
+                alert(`Hasta pronto ${cliente.nombre}`)
                 break
         default:
-                alert('ERROR.!!! la respuesta es si o no')
+                alert('La respuesta puede ser, si o no ..!!')
                 break
     } 
 }
 
-function validaCod(elegir) {
-    const pedidoDelUsuario = elegir => {
-        console.log(CARTA.find( () => elegir === CARTA.cod))
-    }
-}   
-
-function inicioComanda(elegir) {
-    elegir = prompt('Introduce el codigo del plato.Para TOTAL introduzca (t)').toLocaleUpperCase()
-    console.log('En inicioComanda(), cod plato :', elegir)
-    validaCod(elegir)
+// ---------------  crea la comanda  ---------------------------
+function inicioComanda(codPlato) {
+    codPlato = prompt('Introduzca codigo del plato  -  ( M )odifica  ( T )otal   ( S )alir').toLocaleUpperCase()
+    codPlato = validaCod(codPlato)
+    return codPlato
 }
 
-// Preguntamos si quiere realizar un pedido. si entra en bucle de tomar la comanda
-while(inOut = 'si') {
-    pedir(inOut)
-    console.log('oooooooooo',salir, inOut)
-    while(salir = false && elegir != 't') {
-        inicioComanda(elegir)
+function validaCod(codPlato) {
+    const codigoValidado = CARTA.find(x => x.cod === codPlato)
+
+    if (codigoValidado == undefined && codPlato != 'M' && codPlato != 'T' && codPlato != 'S') {
+        alert('Este plato no existe o la opción elegida no es correcta')
+    } else if(codigoValidado != undefined && codPlato != 'M' && codPlato != 'T' && codPlato != 'S') {
+                // -----  Escribin¡mos en Array pedido[]  --------------
+                pedido.push(codigoValidado) 
+                let precioNum = parseInt(codigoValidado.precio)
+                // ----   Sumamos el plato al total del pedido  --------
+                totalPedido = totalPedido + precioNum 
+                console.log(codigoValidado.cod, '   ', codigoValidado.nombre, '   ',codigoValidado.precio, '   ', totalPedido)
+    } 
+    return codPlato
+}   
+
+// ---------------  fin de la comanda  ---------------------------
+
+// ---------------  Totaliza el pedido  --------------------------
+function MostrarTotal(totalPedido) {
+    console.log('Total a pagar :', totalPedido)
+    console.log('**********************')
+    totalPedido = 0
+    return totalPedido
+}
+
+// ---------------  Fin Totaliza el pedido  ----------------------
+
+// ---------------  Modifica el pedido  --------------------------
+function modificaPedido() {
+    console.log('En modifica pedido')
+}
+// ---------------  Fin Modifica el pedido  ----------------------
+
+
+// ********************* Lógica **********************************
+while(inOut === 'si') {
+    inOut = pedirSiNo(inOut)
+    console.log('Cliente : ', cliente.nombre)
+    console.log('Codigo   Nombre    Precio     TOTAL')
+    console.log('===================================')
+    while(inOut === 'si' && codPlato != 'M' && codPlato != 'T' && codPlato != 'S') {
+        
+        codPlato = inicioComanda(codPlato)
+        if (codPlato === 'T') {
+            totalPedido = MostrarTotal(totalPedido)
+            pedido = []
+        } else if (codPlato === 'M')
+            modificaPedido()
     }
+    inOut = 'si'
+    codPlato = 'x'
 }
