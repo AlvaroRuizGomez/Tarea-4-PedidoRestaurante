@@ -7,11 +7,13 @@
  * Programación Funcional
  */
 
+// ***************** Variables **********************
 //  CLIENTE
 let inOut = 'si',
     codPlato = 'x',
     codigoOk = true,
-    totalPedido = 0
+    subTotal = 0,
+    cantidad = 0
 
 // Pedido Actual
 let pedido = []
@@ -20,21 +22,6 @@ let cliente = {
     nombre: 'Alvaro',
     edad: 54
 }
-
-
-// MOSTRAR MENÚ
-const mostrarMenu = () => {
-    console.log(`COD - NOMBRE - PRECIO`)
-    console.log(`---------------------`)
-    CARTA.forEach( plato => {
-        console.log(`${plato.cod} - ${plato.nombre}- ${plato.precio}€`)
-    })
-}
-
-// Enseñar el menu
-mostrarMenu()
-
-// PEDIDO
 
 // **************** Funciones **********************
 
@@ -50,7 +37,6 @@ function validaIntroPedido(inOut) {
         case 'si':
                 break
         case 'no':
-                console.log('Chao')
                 alert(`Hasta pronto ${cliente.nombre}`)
                 break
         default:
@@ -61,61 +47,76 @@ function validaIntroPedido(inOut) {
 
 // ---------------  crea la comanda  ---------------------------
 function inicioComanda(codPlato) {
-    codPlato = prompt('Introduzca codigo del plato  -  ( M )odifica  ( T )otal   ( S )alir').toLocaleUpperCase()
-    codPlato = validaCod(codPlato)
+    codPlato = prompt('Introduzca codigo del plato  - ( T )otal   ( S )alir').toLocaleUpperCase()
+    // codPlato = validaCod(codPlato, totalPedido)
+    validaCod(codPlato)
     return codPlato
 }
 
 function validaCod(codPlato) {
+    // ----------  validar si existe código plato  ------------------
     const codigoValidado = CARTA.find(x => x.cod === codPlato)
 
     if (codigoValidado == undefined && codPlato != 'M' && codPlato != 'T' && codPlato != 'S') {
         alert('Este plato no existe o la opción elegida no es correcta')
-    } else if(codigoValidado != undefined && codPlato != 'M' && codPlato != 'T' && codPlato != 'S') {
-                // -----  Escribin¡mos en Array pedido[]  --------------
+    } else if(codigoValidado != undefined && codPlato != 'T' && codPlato != 'S') {
+                // -----  Escribimos en el Array pedido[]  --------------
                 pedido.push(codigoValidado) 
-                let precioNum = parseInt(codigoValidado.precio)
-                // ----   Sumamos el plato al total del pedido  --------
-                totalPedido = totalPedido + precioNum 
-                console.log(codigoValidado.cod, '   ', codigoValidado.nombre, '   ',codigoValidado.precio, '   ', totalPedido)
+                subTotal = codigoValidado.precio
+
+                // ----   Mostramos la linea de detalle ----------------
+                console.log(`║${codigoValidado.cod}        ${codigoValidado.nombre}    ${codigoValidado.precio}          ${subTotal}  ║`)
     } 
     return codPlato
 }   
 
 // ---------------  fin de la comanda  ---------------------------
 
-// ---------------  Totaliza el pedido  --------------------------
-function MostrarTotal(totalPedido) {
-    console.log('Total a pagar :', totalPedido)
-    console.log('**********************')
-    totalPedido = 0
-    return totalPedido
+
+// ********************* Inicio/Lógica **********************************
+// Arranque
+// MOSTRAR MENÚ
+const mostrarMenu = () => {
+    console.log(`COD - NOMBRE - PRECIO`)
+    console.log(`---------------------`)
+    CARTA.forEach( plato => {
+        console.log(`${plato.cod} - ${plato.nombre}- ${plato.precio}€`)
+    })
+}
+mostrarMenu()
+
+// PEDIDO
+const totalPedido = () => {
+    let total = 0
+    for(producto of pedido){ 
+        total += parseInt(producto.precio)
+    }
+    return total
 }
 
-// ---------------  Fin Totaliza el pedido  ----------------------
-
-// ---------------  Modifica el pedido  --------------------------
-function modificaPedido() {
-    console.log('En modifica pedido')
-}
-// ---------------  Fin Modifica el pedido  ----------------------
-
-
-// ********************* Lógica **********************************
 while(inOut === 'si') {
     inOut = pedirSiNo(inOut)
-    console.log('Cliente : ', cliente.nombre)
-    console.log('Codigo   Nombre    Precio     TOTAL')
-    console.log('===================================')
-    while(inOut === 'si' && codPlato != 'M' && codPlato != 'T' && codPlato != 'S') {
-        
+    console.log('╔════════════════════════════╗')
+    console.log(`║    **  P E D I D O  **     ║`)
+    console.log('╠════════════════════════════╣')
+
+    console.log(`║ Cliente :  ${cliente.nombre}          ║`)
+    console.log('╠════════════════════════════╩════════════╗')
+    console.log('║Codigo    Nombre    Precio(€)  Subtotal€ ║')
+    console.log('╠═════════════════════════════════════════╣')
+    while(inOut === 'si' && codPlato != 'T' && codPlato != 'S') {
         codPlato = inicioComanda(codPlato)
         if (codPlato === 'T') {
-            totalPedido = MostrarTotal(totalPedido)
+            console.log('╔═════════════════════════════════════════╗')
+            console.log(`║ T O T A L ........................  ${totalPedido()}€ ║`)
+            console.log('╚═════════════════════════════════════════╝')
             pedido = []
-        } else if (codPlato === 'M')
-            modificaPedido()
+        } else if (codPlato === 'S') {
+            console.log('║**********  Pedido Cancelado  ***********║')
+            console.log('╚═════════════════════════════════════════╝')
+
+        }
     }
-    inOut = 'si'
+    // inOut = 'si' // Descomentar para que se ejecute infinito
     codPlato = 'x'
 }

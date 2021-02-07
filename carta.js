@@ -4,12 +4,12 @@
 
 const CARTA = [
     {
-        nombre: 'Pollo',
+        nombre: 'Pollo    ',
         precio: '12',
         cod: 'C01'
     },
     {
-       nombre: 'Patatas',
+       nombre: 'Patatas   ',
        precio: '5',
        cod: 'G01'
    },
@@ -19,7 +19,7 @@ const CARTA = [
        cod: 'V01'
    },
    {
-       nombre: 'Postre',
+       nombre: 'Postre    ',
        precio: '18',
        cod: 'P01'
    },
